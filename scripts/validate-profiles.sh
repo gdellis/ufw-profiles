@@ -103,6 +103,31 @@ validate_ports() {
 	IFS="${saved_ifs}"
 }
 
+# Validate a profile section's required fields
+# Called when a section ends (new section or EOF)
+validate_profile_section() {
+	_profile_name="$1"
+	_title="$2"
+	_description="$3"
+	_ports="$4"
+	_filename="$5"
+
+	# Check required fields
+	if [ -z "${_title}" ]; then
+		error "[${_filename}:${_profile_name}] Missing required field 'title'"
+	fi
+
+	if [ -z "${_description}" ]; then
+		error "[${_filename}:${_profile_name}] Missing required field 'description'"
+	fi
+
+	if [ -z "${_ports}" ]; then
+		error "[${_filename}:${_profile_name}] Missing required field 'ports'"
+	else
+		validate_ports "${_ports}" "${_filename}:${_profile_name}"
+	fi
+}
+
 # Validate a single profile file
 validate_profile() {
 	file="$1"
@@ -116,11 +141,12 @@ validate_profile() {
 		return
 	fi
 
-	# Look for profile section [name]
+	# Track current profile section
 	profile_name=""
 	title=""
 	description=""
 	ports=""
+	section_count=0
 
 	while IFS= read -r line || [ -n "${line}" ]; do
 		# Skip empty lines and comments
@@ -131,8 +157,18 @@ validate_profile() {
 		# Check for section header
 		case "${line}" in
 		\[*\])
+			# Validate previous section if exists
+			if [ -n "${profile_name}" ]; then
+				validate_profile_section "${profile_name}" "${title}" "${description}" "${ports}" "${filename}"
+			fi
+
+			# Start new section
 			profile_name="${line#[}"
 			profile_name="${profile_name%]}"
+			title=""
+			description=""
+			ports=""
+			section_count=$((section_count + 1))
 
 			# Validate section name (lowercase, no spaces, alphanumeric and hyphens)
 			if ! echo "${profile_name}" | grep -qE '^[a-z0-9-]+$'; then
@@ -142,37 +178,30 @@ validate_profile() {
 			;;
 		esac
 
-		# Parse key=value pairs
-		case "${line}" in
-		title=*)
-			title="${line#title=}"
-			;;
-		description=*)
-			description="${line#description=}"
-			;;
-		ports=*)
-			ports="${line#ports=}"
-			;;
-		esac
+		# Parse key=value pairs (only if we're in a section)
+		if [ -n "${profile_name}" ]; then
+			case "${line}" in
+			title=*)
+				title="${line#title=}"
+				;;
+			description=*)
+				description="${line#description=}"
+				;;
+			ports=*)
+				ports="${line#ports=}"
+				;;
+			esac
+		fi
 	done <"${file}"
 
-	# Check required fields
-	if [ -z "${profile_name}" ]; then
+	# Validate the last section
+	if [ -n "${profile_name}" ]; then
+		validate_profile_section "${profile_name}" "${title}" "${description}" "${ports}" "${filename}"
+	fi
+
+	# Check if any section was found
+	if [ "${section_count}" -eq 0 ]; then
 		error "[${filename}] Missing section header [profile-name]"
-	fi
-
-	if [ -z "${title}" ]; then
-		error "[${filename}] Missing required field 'title'"
-	fi
-
-	if [ -z "${description}" ]; then
-		error "[${filename}] Missing required field 'description'"
-	fi
-
-	if [ -z "${ports}" ]; then
-		error "[${filename}] Missing required field 'ports'"
-	else
-		validate_ports "${ports}" "${filename}"
 	fi
 }
 
