@@ -10,3 +10,7 @@ external-sources=true
 
 # Disable specific checks if needed:
 # disable=SC1090,SC1091
+
+# SC2249: Consider adding a default *) case
+# Disabled because empty defaults are intentional for filtering lines
+disable=SC2249
