@@ -2,13 +2,17 @@
 
 ## Repository Purpose
 
-This project sets up a system's firewall using UFW (Uncomplicated Firewall) with custom application rules and profiles. It provides a collection of pre-defined application profiles that simplify firewall configuration for common services and applications.
+This project sets up a system's firewall using UFW (Uncomplicated Firewall) with custom application rules
+and profiles. It provides a collection of pre-defined application profiles that simplify firewall
+configuration for common services and applications.
 
-UFW app profiles allow users to manage firewall rules for specific applications with a single command: `ufw allow <profile-name>`. Instead of manually specifying individual ports, users can enable/disable all required ports for an application at once.
+UFW app profiles allow users to manage firewall rules for specific applications with a single command:
+`ufw allow <profile-name>`. Instead of manually specifying individual ports, users can enable/disable all
+required ports for an application at once.
 
 ## Project Structure
 
-```
+```text
 ufw-profiles/
 ├── README.md              # Project documentation
 ├── AGENTS.md              # This file - guidelines for AI agents
@@ -32,13 +36,13 @@ shellcheck **/*.sh
 shellcheck path/to/script.sh
 
 # Lint all markdown files
-markdownlint **/*.md
+markdownlint-cli2 **/*.md
 
 # Lint a single markdown file
-markdownlint path/to/file.md
+markdownlint-cli2 path/to/file.md
 
 # Lint all files (run both linters)
-shellcheck **/*.sh && markdownlint **/*.md
+shellcheck **/*.sh && markdownlint-cli2 **/*.md
 ```
 
 ### Validation Commands
@@ -111,11 +115,12 @@ ports=port-specification
 
 The `ports` field uses pipe (`|`) to separate multiple port rules:
 
-```
+```text
 ports=80/tcp|443/tcp|8080:8090/tcp|53/udp
 ```
 
 **Format components:**
+
 - Single port: `80/tcp` or `53/udp`
 - Port range: `6000:6100/tcp` (inclusive range)
 - Protocol: Must specify `/tcp` or `/udp`
@@ -140,12 +145,14 @@ ports=1883/tcp|8883/tcp|990/tcp|6000:6100/tcp|6000:6100/udp
 - **description**: Explain the purpose and context; mention if it's for LAN, cloud, or both
 
 **Good example:**
+
 ```ini
 title=Bambu Lab 3D Printer (LAN Mode)
 description=Ports required for local network communication with Bambu Lab printer
 ```
 
 **Avoid:**
+
 ```ini
 title=Ports for Bambu Printer
 description=Opens ports
@@ -213,7 +220,8 @@ ports=1883/tcp|8883/tcp
 - Keep commits atomic - one profile or logical change per commit
 
 **Examples:**
-```
+
+```text
 add: syncthing profile for file synchronization
 update: bambu-printer-lan with additional discovery ports
 fix: correct mqtt-broker port specification syntax
@@ -224,7 +232,7 @@ docs: update README with installation instructions
 
 1. Create branch from `main`
 2. Make changes following profile format guidelines
-3. Run lint commands: `shellcheck **/*.sh && markdownlint **/*.md`
+3. Run lint commands: `shellcheck **/*.sh && markdownlint-cli2 **/*.md`
 4. Commit with conventional commit message
 5. Push branch and create PR
 6. Ensure CI checks pass (if configured)

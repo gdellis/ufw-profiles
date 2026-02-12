@@ -1,0 +1,12 @@
+# ShellCheck configuration
+# Severity level: style (reports all issues including style suggestions)
+severity=style
+
+# Enable all optional checks
+enable=all
+
+# External sources (allow sourcing from paths that shellcheck can't follow)
+external-sources=true
+
+# Disable specific checks if needed:
+# disable=SC1090,SC1091

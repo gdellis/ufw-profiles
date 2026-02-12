@@ -1,0 +1,4 @@
+[basic-firewall]
+title=Basic Firewall Setup
+description=Essential services for common server setup (SSH for remote access, HTTP and HTTPS for web services)
+ports=22/tcp|80/tcp|443/tcp
