@@ -1,0 +1,4 @@
+[blp-cloud]
+title=Bambu Lab 3D Printer (Cloud Mode)
+description=Ports required for Bambu Lab printer cloud services and remote access
+ports=10001:10512/tcp|10001:10512/udp|5888:5889/tcp|5888:5889/udp|4000:4100/tcp|4000:4100/udp|8443/tcp|8130/tcp|3478:3989/tcp|3478:3989/udp

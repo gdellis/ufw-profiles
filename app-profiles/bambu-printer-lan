@@ -1,0 +1,4 @@
+[blp-lan]
+title=Bambu Lab 3D Printer (LAN Mode)
+description=Ports required for local network communication with Bambu Lab printer
+ports=6000:6100/tcp|6000:6100/udp|8883/tcp|1883/tcp|990/tcp
