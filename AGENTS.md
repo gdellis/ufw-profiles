@@ -198,6 +198,51 @@ description=Standard MQTT broker ports for IoT messaging (unencrypted and TLS)
 ports=1883/tcp|8883/tcp
 ```
 
+## Git Workflow
+
+### Branching Strategy
+
+- `main` branch contains stable, tested profiles
+- Create feature branches for new profiles or modifications
+- Use descriptive branch names: `add/<profile-name>`, `fix/<issue>`, `update/<profile-name>`
+
+### Commit Guidelines
+
+- Use conventional commit format: `type: description`
+- Types: `add`, `update`, `fix`, `docs`, `refactor`
+- Keep commits atomic - one profile or logical change per commit
+
+**Examples:**
+```
+add: syncthing profile for file synchronization
+update: bambu-printer-lan with additional discovery ports
+fix: correct mqtt-broker port specification syntax
+docs: update README with installation instructions
+```
+
+### Pull Request Process
+
+1. Create branch from `main`
+2. Make changes following profile format guidelines
+3. Run lint commands: `shellcheck **/*.sh && markdownlint **/*.md`
+4. Commit with conventional commit message
+5. Push branch and create PR
+6. Ensure CI checks pass (if configured)
+7. Merge after review
+
+### What to Commit
+
+- New profile files in `app-profiles/`
+- Documentation updates (`README.md`, `AGENTS.md`)
+- Shell scripts for installation or validation
+- CI/CD configuration files
+
+### What NOT to Commit
+
+- Secrets or credentials
+- System-specific configuration files
+- Logs or temporary files
+
 ## Notes for AI Agents
 
 - This is NOT a code project - no compilation or testing frameworks
