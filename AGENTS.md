@@ -14,12 +14,20 @@ required ports for an application at once.
 
 ```text
 ufw-profiles/
-├── README.md              # Project documentation
-├── AGENTS.md              # This file - guidelines for AI agents
-└── app-profiles/          # UFW application profile definitions
+├── .github/
+│   └── workflows/
+│       └── pr.yml           # PR validation workflow
+├── .gitignore               # Git ignore patterns
+├── .markdownlint.json       # Markdownlint configuration
+├── .shellcheckrc            # Shellcheck configuration
+├── README.md                # Project documentation
+├── AGENTS.md                # This file - guidelines for AI agents
+├── scripts/
+│   └── validate-profiles.sh # Profile validation script
+└── app-profiles/            # UFW application profile definitions
     ├── bambu-printer-lan
     ├── bambu-printer-cloud
-    └── ...                # Additional profile files
+    └── ...                  # Additional profile files
 ```
 
 ## Build/Lint/Test Commands
@@ -48,7 +56,10 @@ shellcheck **/*.sh && markdownlint-cli2 **/*.md
 ### Validation Commands
 
 ```bash
-# Check syntax of a single profile (validate INI format)
+# Validate all UFW profiles (INI format, required fields, port syntax)
+./scripts/validate-profiles.sh
+
+# Check syntax of a single profile (validate INI format - requires sudo)
 sudo ufw app info <profile-name>
 
 # List all available profiles after installation
@@ -233,10 +244,18 @@ docs: update README with installation instructions
 1. Create branch from `main`
 2. Make changes following profile format guidelines
 3. Run lint commands: `shellcheck **/*.sh && markdownlint-cli2 **/*.md`
-4. Commit with conventional commit message
-5. Push branch and create PR
-6. Ensure CI checks pass (if configured)
-7. Merge after review
+4. Run validation: `./scripts/validate-profiles.sh`
+5. Commit with conventional commit message
+6. Push branch and create PR
+7. Ensure CI checks pass
+8. Merge after review
+
+### CI/CD
+
+PRs are automatically validated by GitHub Actions (`.github/workflows/pr.yml`):
+
+- **Lint job**: Runs `shellcheck` and `markdownlint-cli2`
+- **Validate job**: Runs `scripts/validate-profiles.sh`
 
 ### What to Commit
 
